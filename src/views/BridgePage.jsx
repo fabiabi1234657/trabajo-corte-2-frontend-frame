@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useCrisisStore } from '../store/useCrisisStore';
 
 const ACTIONS = [
-  { key: 'increase-cooling', label: 'Aumentar Refrigeración', tone: 'ok' },
-  { key: 'restart-servers', label: 'Reiniciar Servidores', tone: 'warn' },
-  { key: 'activate-firewall', label: 'Activar Firewall de Emergencia', tone: 'danger' }
+  { key: 'isolate-network', label: 'Aislar Segmento de Red', tone: 'ok' },
+  { key: 'generate-decrypt-key', label: 'Generar Llave de Desencriptado', tone: 'warn' },
+  { key: 'block-ip-ports', label: 'Bloquear Puertos/IP en Emergencia', tone: 'danger' }
 ];
 
 export function BridgePage() {
@@ -23,7 +23,7 @@ export function BridgePage() {
       <article className="rounded-2xl border border-command-line bg-command-panel p-5 shadow-panel">
         <h2 className="font-display text-xl text-slate-100">Puente Técnico (Solo Acción)</h2>
         <p className="mt-1 text-sm text-slate-400">
-          Ejecuta maniobras inmediatas y valida códigos recibidos por el Monitor.
+          Ejecuta protocolos SOC y valida codigos recibidos por el Monitor.
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">

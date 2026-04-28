@@ -1,67 +1,116 @@
-# Crisis Ops Frontend
+# Crisis Ops - SOC (Frontend + Brain Server)
 
-Frontend React para simulación asimétrica de gestión de crisis entre dos roles:
+Sistema asimetrico de gestion de crisis en la tematica de Ciberseguridad (SOC), con dos roles:
 
-- Monitor: vista de solo lectura con telemetría y código de seguridad.
-- Técnico: vista de solo acción para ejecutar protocolos.
+- Monitor: solo lectura de telemetria y codigo de seguridad.
+- Tecnico: solo accion para ejecutar protocolos de respuesta.
 
 ## Integrantes
 
-- Nombre completo integrante 1
-- Nombre completo integrante 2
+- Fabian Andres Coral Garcia
+- Nombre integrante 2
 
-## Temática Elegida
+## Tematica Elegida
 
-- Gestión de Data Center (Infraestructura Cloud)
+- Ciberseguridad (SOC)
 
-## Rutas
+## Repositorio
 
-- `/`: Lobby (registro y selección de rol).
-- `/ops/monitor`: Centro de monitoreo.
-- `/ops/bridge`: Puente técnico de acciones.
+- URL GitHub: agregar aqui
 
-## Tecnologías
+## Arquitectura
 
-- React + Vite
-- React Router v7
-- Zustand
-- Socket.IO Client
-- Tailwind CSS
+- Frontend: React + React Router v7 + Zustand + Tailwind.
+- Servidor (Cerebro): Node.js + Express + Socket.io + Swagger.
 
-## Configuración rápida
+## Estructura
 
-1. Instalar dependencias:
+- Frontend en la raiz del proyecto.
+- Backend en la carpeta `server/`.
+
+## Instalacion
+
+1. Instalar frontend:
 
    npm install
 
-2. Configurar la URL del backend de crisis:
+2. Configurar frontend:
 
    - Copiar `.env.example` a `.env`
-   - Ajustar `VITE_SOCKET_URL` (ej: `http://localhost:4000`)
+   - Definir `VITE_SOCKET_URL=http://localhost:4000`
 
-3. Levantar frontend:
+3. Instalar backend:
+
+   cd server
+   npm install
+
+## Ejecucion
+
+1. Iniciar backend (terminal 1):
+
+   cd server
+   npm run dev
+
+2. Iniciar frontend (terminal 2):
 
    npm run dev
 
-## Integración con Backend
+3. Abrir dos navegadores/pestanas, ingresar con mismo `roomId` y roles distintos.
 
-Eventos esperados de socket:
+## Rutas Frontend
 
-- Emitidos por frontend:
-  - `client:join` (al conectar jugador)
-  - `tech:action` (acciones del técnico)
-- Escuchados por frontend:
-  - `crisis:update`
-  - `crisis:security-code`
-  - `crisis:log`
+- `/`: Lobby (registro, rol e ID de sala).
+- `/ops/monitor`: Panel del Monitor (solo lectura).
+- `/ops/bridge`: Panel del Tecnico (solo accion).
 
-Con esto, cada acción del Técnico se refleja en tiempo real en la vista del Monitor.
+## API REST (Swagger)
 
-## Entrega (Moodle)
+- Swagger UI: `http://localhost:4000/api-docs`
+- Health: `GET http://localhost:4000/health`
+- Salas activas: `GET http://localhost:4000/rooms`
+- Estado de una sala: `GET http://localhost:4000/rooms/:roomId`
 
-Incluir en la entrega:
+## Eventos Socket.io
 
-- Integrantes (nombres completos)
-- Temática elegida
+- Cliente -> Servidor:
+  - `join-room` payload: `{ roomId, playerName, role }`
+  - `action` payload: `{ action, payload }`
+
+- Servidor -> Clientes de la sala:
+  - `update-state` payload: `{ roomId, metrics, securityCode, isCritical, tick, logMessage, level }`
+
+## Logica Implementada en el Cerebro
+
+- Salas multiples por `roomId` (partidas simultaneas).
+- Degradacion automatica cada segundo (`setInterval`) aumentando riesgo SOC.
+- Validacion de codigo `validate-security-code` enviada por el Tecnico.
+- Acciones SOC:
+  - `isolate-network`
+  - `generate-decrypt-key`
+  - `block-ip-ports`
+
+## Pruebas Obligatorias
+
+1. Swagger:
+   - Entrar a `http://localhost:4000/api-docs`
+   - Probar `GET /health`, `GET /rooms` y `GET /rooms/{roomId}`
+
+2. Socket Tester (Postman):
+   - Conectar a `ws://localhost:4000/socket.io/?EIO=4&transport=websocket` (o cliente Socket.io de Postman)
+   - Emitir `join-room` desde dos clientes con mismo `roomId`
+   - Emitir `action` y confirmar recepcion de `update-state` en tiempo real
+
+3. Socket Tester automatico (Node):
+    - Ejecutar con backend activo:
+       - `cd server`
+       - `npm run test:socket`
+    - El script crea 2 clientes, envia `join-room`, ejecuta `action` y muestra JSON con evidencia de `update-state`.
+
+## Entrega Moodle
+
+- Integrantes (nombres completos de la pareja)
+- Tematica elegida: Ciberseguridad (SOC)
 - Enlace al repositorio GitHub
-- Este README con instalación básica (`npm install`)
+- README con instalacion basica (`npm install`)
+
+Nota: si solo cursas Electiva, entregar como minimo el servidor funcional probado con Swagger y Socket Tester.

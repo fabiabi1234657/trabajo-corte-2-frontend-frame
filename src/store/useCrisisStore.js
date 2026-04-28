@@ -4,13 +4,13 @@ import { create } from 'zustand';
 const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:4000';
 
 const initialMetrics = {
-  rackTemperature: 48,
-  bandwidthUsage: 62,
-  ddosAttempts: 14,
-  coolingPower: 55,
+  suspiciousTraffic: 30,
+  encryptedFilesPercent: 12,
+  anomalousAccessLogs: 25,
+  isolatedNetworkZones: 0,
+  emergencyPortBlocks: 0,
   securityCode: 'N/A',
-  serverStatus: 'Operativo',
-  emergencyFirewall: false
+  responseStatus: 'Estable'
 };
 
 function createLog(message, level = 'info') {
@@ -24,20 +24,21 @@ function createLog(message, level = 'info') {
 
 export const useCrisisStore = create((set, get) => ({
   playerName: '',
+  roomId: '',
   role: '',
-  missionTheme: 'Gestión de Data Center',
+  missionTheme: 'Ciberseguridad (SOC)',
   socket: null,
   socketState: 'desconectado',
   isCritical: false,
   metrics: initialMetrics,
   logs: [createLog('Esperando sincronización con el servidor...')],
 
-  registerPlayer: ({ playerName, role, missionTheme }) => {
-    set({ playerName, role, missionTheme });
+  registerPlayer: ({ playerName, roomId, role }) => {
+    set({ playerName, roomId, role, missionTheme: 'Ciberseguridad (SOC)' });
   },
 
   connectSocket: () => {
-    const { socket, playerName, role, missionTheme } = get();
+    const { socket, playerName, roomId, role } = get();
 
     if (socket) {
       return;
@@ -53,7 +54,7 @@ export const useCrisisStore = create((set, get) => ({
     newSocket.on('connect', () => {
       set({ socketState: 'conectado' });
       get().appendLog('Conectado al servidor de crisis.', 'success');
-      newSocket.emit('client:join', { playerName, role, missionTheme });
+      newSocket.emit('join-room', { playerName, roomId, role });
     });
 
     newSocket.on('disconnect', () => {
@@ -61,25 +62,20 @@ export const useCrisisStore = create((set, get) => ({
       get().appendLog('Socket desconectado.', 'warn');
     });
 
-    newSocket.on('crisis:update', (payload = {}) => {
+    newSocket.on('update-state', (payload = {}) => {
       set((state) => ({
-        metrics: { ...state.metrics, ...(payload.metrics || {}) },
+        metrics: {
+          ...state.metrics,
+          ...(payload.metrics || {}),
+          securityCode: String(payload.securityCode || state.metrics.securityCode),
+          responseStatus: payload.isCritical ? 'Critico' : 'Estable'
+        },
         isCritical: Boolean(payload.isCritical)
       }));
 
       if (payload.logMessage) {
         get().appendLog(payload.logMessage, payload.level || 'info');
       }
-    });
-
-    newSocket.on('crisis:security-code', (code) => {
-      set((state) => ({
-        metrics: {
-          ...state.metrics,
-          securityCode: String(code)
-        }
-      }));
-      get().appendLog('Nuevo código de seguridad recibido.', 'info');
     });
 
     newSocket.on('crisis:log', (entry) => {
@@ -104,7 +100,7 @@ export const useCrisisStore = create((set, get) => ({
       return;
     }
 
-    socket.emit('tech:action', {
+    socket.emit('action', {
       action,
       payload,
       sentAt: new Date().toISOString()
@@ -123,6 +119,7 @@ export const useCrisisStore = create((set, get) => ({
 
     set({
       playerName: '',
+      roomId: '',
       role: '',
       socket: null,
       socketState: 'desconectado',

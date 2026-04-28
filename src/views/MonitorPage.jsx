@@ -42,10 +42,10 @@ export function MonitorPage() {
           <p className="mt-1 text-sm text-slate-400">Sincronizado en vivo con el servidor de crisis.</p>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <StatBar label="Temperatura de racks" value={metrics.rackTemperature} />
-            <StatBar label="Uso de ancho de banda" value={metrics.bandwidthUsage} />
-            <StatBar label="Intentos DDoS" value={metrics.ddosAttempts} unit=" evt" />
-            <StatBar label="Potencia de refrigeración" value={metrics.coolingPower} />
+            <StatBar label="Trafico sospechoso" value={metrics.suspiciousTraffic} />
+            <StatBar label="Archivos encriptados" value={metrics.encryptedFilesPercent} />
+            <StatBar label="Logs anomalos" value={metrics.anomalousAccessLogs} />
+            <StatBar label="Bloqueos de puertos" value={metrics.emergencyPortBlocks * 5} />
           </div>
         </article>
 

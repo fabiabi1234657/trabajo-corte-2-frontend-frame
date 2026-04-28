@@ -2,39 +2,26 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCrisisStore } from '../store/useCrisisStore';
 
-const THEMES = [
-  'Gestión de Data Center',
-  'Operaciones Satelitales',
-  'Planta Química Industrial',
-  'Smart Grid',
-  'Ciberseguridad (SOC)',
-  'Monitoreo de Oleoductos',
-  'UCI Hospitalaria',
-  'Logística Portuaria',
-  'Control de Tráfico Ferroviario',
-  'Fintech (Trading de Alta Frecuencia)'
-];
-
 export function LobbyPage() {
   const navigate = useNavigate();
   const registerPlayer = useCrisisStore((state) => state.registerPlayer);
   const connectSocket = useCrisisStore((state) => state.connectSocket);
 
   const [playerName, setPlayerName] = useState('');
+  const [roomId, setRoomId] = useState('soc-room-01');
   const [role, setRole] = useState('monitor');
-  const [missionTheme, setMissionTheme] = useState(THEMES[0]);
 
   const onSubmit = (event) => {
     event.preventDefault();
 
-    if (!playerName.trim()) {
+    if (!playerName.trim() || !roomId.trim()) {
       return;
     }
 
     registerPlayer({
       playerName: playerName.trim(),
-      role,
-      missionTheme
+      roomId: roomId.trim(),
+      role
     });
     connectSocket();
 
@@ -49,8 +36,8 @@ export function LobbyPage() {
         <p className="font-display text-sm tracking-[0.24em] text-command-accent">INICIAR MISIÓN</p>
         <h2 className="mt-3 font-display text-3xl text-slate-100">Sistema Asimétrico de Gestión de Crisis</h2>
         <p className="mt-3 text-slate-300">
-          El Monitor interpreta datos críticos y el Técnico ejecuta comandos de contención.
-          Coordinen decisiones en tiempo real para evitar el colapso.
+          El Monitor interpreta telemetria SOC y el Tecnico ejecuta comandos de respuesta.
+          Coordinen decisiones en tiempo real para contener la crisis de ciberseguridad.
         </p>
 
         <form onSubmit={onSubmit} className="mt-8 space-y-5">
@@ -97,18 +84,15 @@ export function LobbyPage() {
           </label>
 
           <label className="block">
-            <span className="mb-2 block text-sm text-slate-300">Temática</span>
-            <select
-              value={missionTheme}
-              onChange={(event) => setMissionTheme(event.target.value)}
+            <span className="mb-2 block text-sm text-slate-300">ID de Sala</span>
+            <input
+              value={roomId}
+              onChange={(event) => setRoomId(event.target.value)}
+              placeholder="Ej: pareja-azul"
               className="w-full rounded-xl border border-command-line bg-slate-950/70 px-4 py-3 text-slate-100 outline-none transition focus:border-command-accent"
-            >
-              {THEMES.map((theme) => (
-                <option key={theme} value={theme}>
-                  {theme}
-                </option>
-              ))}
-            </select>
+              required
+            />
+            <p className="mt-2 text-xs text-slate-500">Tematica fija: Ciberseguridad (SOC).</p>
           </label>
 
           <button
