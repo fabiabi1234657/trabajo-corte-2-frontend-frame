@@ -8,13 +8,11 @@ Sistema asimetrico de gestion de crisis en la tematica de Ciberseguridad (SOC), 
 ## Integrantes
 
 - Fabian Andres Coral Garcia
-- Yamith alexander Ardila Cabrera
+- Yamith Alexander Ardila Cabrera
 
 ## Tematica Elegida
 
 - Ciberseguridad (SOC)
-
-
 
 ## Arquitectura
 
@@ -104,11 +102,4 @@ Sistema asimetrico de gestion de crisis en la tematica de Ciberseguridad (SOC), 
        - `npm run test:socket`
     - El script crea 2 clientes, envia `join-room`, ejecuta `action` y muestra JSON con evidencia de `update-state`.
 
-## Entrega Moodle
 
-- Integrantes (nombres completos de la pareja)
-- Tematica elegida: Ciberseguridad (SOC)
-- Enlace al repositorio GitHub
-- README con instalacion basica (`npm install`)
-
-Nota: si solo cursas Electiva, entregar como minimo el servidor funcional probado con Swagger y Socket Tester.
