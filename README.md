@@ -15,7 +15,9 @@ Sistema asimetrico de gestion de crisis en la tematica de Ciberseguridad (SOC), 
 - Ciberseguridad (SOC)
 
 ## Arquitectura
+-monorepositorio
 
+## Stack Tecnologico
 - Frontend: React + React Router v7 + Zustand + Tailwind.
 - Servidor (Cerebro): Node.js + Express + Socket.io + Swagger.
 
