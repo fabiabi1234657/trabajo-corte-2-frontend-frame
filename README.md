@@ -8,15 +8,13 @@ Sistema asimetrico de gestion de crisis en la tematica de Ciberseguridad (SOC), 
 ## Integrantes
 
 - Fabian Andres Coral Garcia
-- Nombre integrante 2
+- Yamith alexander Ardila Cabrera
 
 ## Tematica Elegida
 
 - Ciberseguridad (SOC)
 
-## Repositorio
 
-- URL GitHub: agregar aqui
 
 ## Arquitectura
 
