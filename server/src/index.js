@@ -157,6 +157,15 @@ io.on('connection', (socket) => {
     }
 
     const room = getOrCreateRoom(roomId);
+    // Revisa que el remitente esté autorizado (solo Técnico puede ejecutar acciones)
+    const currentPlayer = room.state.players[socket.id];
+    if (!currentPlayer || currentPlayer.role !== 'technician') {
+      emitState(io, room, {
+        logMessage: 'Accion solo permitida para el Tecnico.',
+        level: 'warn'
+      });
+      return;
+    }
     const result = applyAction(room, payload.action, payload.payload || {});
     computeCriticalState(room);
     emitState(io, room, result);
