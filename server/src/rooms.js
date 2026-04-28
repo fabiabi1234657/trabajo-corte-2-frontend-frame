@@ -20,6 +20,8 @@ function buildInitialState(roomId) {
     securityCode: generateSecurityCode(),
     isCritical: false,
     metrics: {
+      temperature: 25,
+      pressure: 1.0,
       suspiciousTraffic: 30,
       encryptedFilesPercent: 12,
       anomalousAccessLogs: 25,
@@ -76,6 +78,10 @@ export function roomHasPlayers(roomEntry) {
 export function degradeRoom(roomEntry) {
   const state = roomEntry.state;
   state.tick += 1;
+
+  // Simulate environmental degradation: temperature/pressure drift
+  state.metrics.temperature = clamp(state.metrics.temperature + (Math.random() < 0.5 ? 0.5 : 1), 18, 40);
+  state.metrics.pressure = clamp(state.metrics.pressure + (Math.random() < 0.5 ? -0.2 : 0.2), 0.8, 1.6);
 
   state.metrics.suspiciousTraffic = clamp(state.metrics.suspiciousTraffic + randomInt(2, 6), 0, 100);
   state.metrics.encryptedFilesPercent = clamp(
